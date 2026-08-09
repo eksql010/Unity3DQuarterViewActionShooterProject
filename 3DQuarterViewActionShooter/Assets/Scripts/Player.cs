@@ -6,11 +6,16 @@ public class Player : MonoBehaviour
     public float runSpeed;
     public float jumpPower;
     public float dodgeDuration;
+    public GameObject[] weapons;
+    public bool[] hasWeapons;
 
     float horizontalAxis;
     float verticalAxis;
+
     bool runDown;
     bool jumpDown;
+    bool interactionDown;
+    bool[] swapDowns = new bool[3];
 
     bool isJump;
     bool isDodge;
@@ -20,6 +25,10 @@ public class Player : MonoBehaviour
 
     Animator animator;
     Rigidbody rigid;
+
+    GameObject nearObject;
+    GameObject equipedWeapon;
+    int equipedWeaponIndex = -1;
 
     void Awake()
     {
@@ -34,6 +43,8 @@ public class Player : MonoBehaviour
         Turn();
         Jump();
         Dodge();
+        Swap();
+        Interaction();
     }
 
     void KeyInput()
@@ -42,6 +53,10 @@ public class Player : MonoBehaviour
         verticalAxis = Input.GetAxisRaw("Vertical");
         runDown = Input.GetButton("Run");
         jumpDown = Input.GetButtonDown("Jump");
+        interactionDown = Input.GetButtonDown("Interaction");
+        swapDowns[0] = Input.GetButtonDown("Swap1");
+        swapDowns[1] = Input.GetButtonDown("Swap2");
+        swapDowns[2] = Input.GetButtonDown("Swap3");
     }
 
     void Move()
@@ -97,12 +112,70 @@ public class Player : MonoBehaviour
         isDodge = false;
     }
 
+    void Swap()
+    {
+        int weaponIndex = -1;
+        if (swapDowns[0]) weaponIndex = 0;
+        else if (swapDowns[1]) weaponIndex = 1;
+        else if (swapDowns[2]) weaponIndex = 2;
+
+        if (weaponIndex == -1 || isJump || isDodge)
+            return;
+
+        if (!hasWeapons[weaponIndex] || equipedWeaponIndex == weaponIndex)
+            return;
+
+        if (equipedWeapon != null)
+        {
+            equipedWeapon.SetActive(false);
+        }
+
+        equipedWeaponIndex = weaponIndex;
+        equipedWeapon = weapons[weaponIndex];
+        equipedWeapon.SetActive(true);
+
+        animator.SetTrigger("doSwap");
+    }
+
+    void Interaction()
+    {
+        if(interactionDown && nearObject != null && !isJump && !isDodge)
+        {
+            if(nearObject.tag == "Weapon")
+            {
+                Item item = nearObject.GetComponent<Item>();
+                int weaponIndex = item.value;
+                hasWeapons[weaponIndex] = true;
+
+                Destroy(nearObject);
+            }
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Floor")
         {
             animator.SetBool("isJump", false);
             isJump = false;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.tag == "Weapon")
+        {
+            nearObject = other.gameObject;
+        }
+
+        Debug.Log(nearObject.name);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Weapon")
+        {
+            nearObject = null;
         }
     }
 }
