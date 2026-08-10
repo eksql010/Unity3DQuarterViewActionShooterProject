@@ -51,7 +51,12 @@ public class Player : MonoBehaviour
     {
         horizontalAxis = Input.GetAxisRaw("Horizontal");
         verticalAxis = Input.GetAxisRaw("Vertical");
-        runDown = Input.GetButton("Run");
+
+        if(Input.GetButtonDown("Run"))
+        {
+            runDown = !runDown;
+        }
+
         jumpDown = Input.GetButtonDown("Jump");
         interactionDown = Input.GetButtonDown("Interaction");
         swapDowns[0] = Input.GetButtonDown("Swap1");
@@ -71,7 +76,7 @@ public class Player : MonoBehaviour
         transform.position += moveVector * (runDown ? runSpeed : walkSpeed) * Time.deltaTime;
 
         animator.SetBool("isWalk", moveVector != Vector3.zero);
-        animator.SetBool("isRun", runDown);
+        animator.SetBool("isRun", runDown && moveVector != Vector3.zero);
     }
 
     void Turn()
