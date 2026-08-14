@@ -184,12 +184,8 @@ public class Player : MonoBehaviour
 
         if(fireDown && isFireReady && !isDodge) // && !isSwap)
         {
-            if(equipedWeapon.type == Weapon.Type.Melee) // юс╫ц
-            {
-                equipedWeapon.Use();
-                animator.SetTrigger("doSwing");
-            }
-
+            equipedWeapon.Use();
+            animator.SetTrigger(equipedWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
             fireDelay = 0f;
         }
     }
