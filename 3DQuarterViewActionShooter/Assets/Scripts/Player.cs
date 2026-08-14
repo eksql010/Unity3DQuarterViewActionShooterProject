@@ -28,9 +28,11 @@ public class Player : MonoBehaviour
     bool jumpDown;
     bool interactionDown;
     bool[] swapDowns = new bool[3];
+    bool fireDown;
 
     bool isJump;
     bool isDodge;
+    bool isFireReady = true;
 
     Vector3 moveVector;
     Vector3 dodgeVector;
@@ -39,8 +41,9 @@ public class Player : MonoBehaviour
     Rigidbody rigid;
 
     GameObject nearObject;
-    GameObject equipedWeapon;
+    Weapon equipedWeapon;
     int equipedWeaponIndex = -1;
+    float fireDelay;
 
     void Awake()
     {
@@ -57,6 +60,7 @@ public class Player : MonoBehaviour
         Dodge();
         Swap();
         Interaction();
+        Attack();
     }
 
     void KeyInput()
@@ -74,6 +78,7 @@ public class Player : MonoBehaviour
         swapDowns[0] = Input.GetButtonDown("Swap1");
         swapDowns[1] = Input.GetButtonDown("Swap2");
         swapDowns[2] = Input.GetButtonDown("Swap3");
+        fireDown = Input.GetButtonDown("Fire1");
     }
 
     void Move()
@@ -144,12 +149,12 @@ public class Player : MonoBehaviour
 
         if (equipedWeapon != null)
         {
-            equipedWeapon.SetActive(false);
+            equipedWeapon.gameObject.SetActive(false);
         }
 
         equipedWeaponIndex = weaponIndex;
-        equipedWeapon = weapons[weaponIndex];
-        equipedWeapon.SetActive(true);
+        equipedWeapon = weapons[weaponIndex].GetComponent<Weapon>();
+        equipedWeapon.gameObject.SetActive(true);
 
         animator.SetTrigger("doSwap");
     }
@@ -166,6 +171,26 @@ public class Player : MonoBehaviour
 
                 Destroy(nearObject);
             }
+        }
+    }
+
+    void Attack()
+    {
+        if(equipedWeapon == null)
+            return;
+
+        fireDelay += Time.deltaTime;
+        isFireReady = equipedWeapon.rate < fireDelay;
+
+        if(fireDown && isFireReady && !isDodge) // && !isSwap)
+        {
+            if(equipedWeapon.type == Weapon.Type.Melee) // юс╫ц
+            {
+                equipedWeapon.Use();
+                animator.SetTrigger("doSwing");
+            }
+
+            fireDelay = 0f;
         }
     }
 

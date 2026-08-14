@@ -6334,7 +6334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 931c86b6863f97043a831f5f3632d61b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  type: 0
+  type: 1
   damage: 0
   rate: 0
   meleeArea: {fileID: 0}
@@ -17078,7 +17078,7 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Time: 0.5
+  m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -17423,7 +17423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 931c86b6863f97043a831f5f3632d61b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  type: 0
+  type: 1
   damage: 0
   rate: 0
   meleeArea: {fileID: 0}
