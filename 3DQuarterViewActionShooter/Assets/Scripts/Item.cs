@@ -7,8 +7,26 @@ public class Item : MonoBehaviour
     public int value;
     public float rotationSpeed;
 
+    Rigidbody rigid;
+    SphereCollider sphereCollider;
+
+    void Awake()
+    {
+        rigid = GetComponent<Rigidbody>();
+        sphereCollider = GetComponent<SphereCollider>();
+    }
+
     void Update()
     {
         transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);   
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Floor")
+        {
+            rigid.isKinematic = true;
+            sphereCollider.enabled = false;
+        }
     }
 }

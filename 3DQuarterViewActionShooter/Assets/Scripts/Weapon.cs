@@ -7,6 +7,10 @@ public class Weapon : MonoBehaviour
     public Type type;
     public int damage;
     public float rate;
+    public float bulletSpeed;
+    public int maxAmmo;
+    public int curAmmo;
+
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
     public Transform bulletPos;
@@ -18,9 +22,14 @@ public class Weapon : MonoBehaviour
     {
         if(type == Type.Melee)
         {
-            //  Swing();
             StopCoroutine("Swing");
             StartCoroutine("Swing");
+        }
+        else if (type == Type.Range && curAmmo > 0)
+        {
+            curAmmo--;
+            StopCoroutine("Shot");
+            StartCoroutine("Shot");
         }
     }
 
@@ -35,5 +44,22 @@ public class Weapon : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
         trailEffect.enabled = false;
+    }
+
+    IEnumerator Shot()
+    {
+        // √—æÀ πﬂªÁ
+        GameObject instantBullet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);
+        Rigidbody bulletRigid = instantBullet.GetComponent<Rigidbody>();
+        bulletRigid.linearVelocity = bulletPos.forward * bulletSpeed;
+
+        yield return null;
+
+        // ≈∫«« πË√‚
+        GameObject instantBulletCase = Instantiate(bulletCase, bulletCasePos.position, bulletCasePos.rotation);
+        Rigidbody bulletCaseRigid = instantBulletCase.GetComponent<Rigidbody>();
+        Vector3 caseVec = bulletCasePos.forward * Random.Range(-3f, -2f) + Vector3.up * Random.Range(2f, 3f);
+        bulletCaseRigid.AddForce(caseVec, ForceMode.Impulse);
+        bulletCaseRigid.AddTorque(Vector3.up * 10f, ForceMode.Impulse);
     }
 }
