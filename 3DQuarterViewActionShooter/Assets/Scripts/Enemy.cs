@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
     public int curHealth;
     public float damageKnockbackPower;
     public float deadKnockbackPower;
+    public float explosionKnockbackHeight;
+    public float explosionRotationPower;
 
     Rigidbody rigid;
     BoxCollider boxCollider;
@@ -16,7 +18,7 @@ public class Enemy : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
-        material = GetComponent<MeshRenderer>().material;
+        material = GetComponentInChildren<MeshRenderer>().material;
     }
 
     void OnTriggerEnter(Collider other)
@@ -27,7 +29,7 @@ public class Enemy : MonoBehaviour
             curHealth -= weapon.damage;
             Vector3 reactionVec = transform.position - other.transform.position;
 
-            StartCoroutine(OnDamage(reactionVec));
+            StartCoroutine(OnDamage(reactionVec, false));
 
             //  Debug.Log("Melee : " + curHealth);
         }
@@ -37,13 +39,20 @@ public class Enemy : MonoBehaviour
             curHealth -= bullet.damage;
             Vector3 reactionVec = transform.position - other.transform.position;
             
-            StartCoroutine(OnDamage(reactionVec));
+            StartCoroutine(OnDamage(reactionVec, false));
 
             //  Debug.Log("Range : " + curHealth);
         }
     }
 
-    IEnumerator OnDamage(Vector3 reactionVec)
+    public void HitByGrenade(Vector3 explosionPos, int damage)
+    {
+        curHealth -= damage;
+        Vector3 reactionVec = transform.position - explosionPos;
+        StartCoroutine(OnDamage(reactionVec, true));
+    }
+
+    IEnumerator OnDamage(Vector3 reactionVec, bool isGrenade)
     {
         material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
@@ -63,9 +72,15 @@ public class Enemy : MonoBehaviour
             gameObject.layer = 11;
 
             reactionVec = reactionVec.normalized;
-            reactionVec += Vector3.up;
+            reactionVec += (isGrenade ? Vector3.up * explosionKnockbackHeight : Vector3.up);
 
             rigid.AddForce(reactionVec * deadKnockbackPower, ForceMode.Impulse);
+
+            if (isGrenade)
+            {
+                rigid.freezeRotation = false;
+                rigid.AddTorque(reactionVec * explosionRotationPower, ForceMode.Impulse);
+            }
 
             Destroy(gameObject, 3f);
         }

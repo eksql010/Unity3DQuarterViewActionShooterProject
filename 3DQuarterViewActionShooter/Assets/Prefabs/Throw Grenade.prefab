@@ -100,6 +100,9 @@ MonoBehaviour:
   effectObject: {fileID: 4903704722169186499}
   rigid: {fileID: 606747899746910243}
   explosionBeforeDuration: 3
+  explosionRadius: 15
+  explosionAfterLifetime: 5
+  damage: 100
 --- !u!1 &9071630434219343959
 GameObject:
   m_ObjectHideFlags: 0
