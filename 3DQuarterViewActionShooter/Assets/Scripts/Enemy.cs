@@ -4,6 +4,9 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    public enum Type { A, B, C };
+    public Type type;
+
     public int maxHealth;
     public int curHealth;
     public float damageKnockbackPower;
@@ -15,6 +18,9 @@ public class Enemy : MonoBehaviour
     public float attackRange;
     public float attackBeforeDuration;  // 근접 콜라이더 활성화 전 시간
     public float attackDuration;        // 근접 콜라이더 활성화 후 비활성화 전까지의 시간
+    public float attackAfterDuration;   // 공격 종료 후 다음 공격까지의 대기 시간
+    //  [SerializeField] float dashForce = 20f;
+    public float dashForce;
 
     public Transform targetTransform;
     public BoxCollider meleeArea;
@@ -140,9 +146,6 @@ public class Enemy : MonoBehaviour
 
     void Targeting()
     {
-        //  float targetRadius = 1.5f;
-        //  float targetRange = 3f;
-
         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
                                                      attackRadius,
                                                      transform.forward,
@@ -162,11 +165,34 @@ public class Enemy : MonoBehaviour
         isAttack = true;
         animator.SetBool("isAttack", true);
 
-        yield return new WaitForSeconds(attackBeforeDuration);
-        meleeArea.enabled = true;
+        switch (type)
+        {
+            case Type.A:
+                yield return new WaitForSeconds(attackBeforeDuration);
+                meleeArea.enabled = true;
 
-        yield return new WaitForSeconds(attackDuration);
-        meleeArea.enabled = false;
+                yield return new WaitForSeconds(attackDuration);
+                meleeArea.enabled = false;
+
+                yield return new WaitForSeconds(attackAfterDuration);
+                break;
+
+            case Type.B:
+                yield return new WaitForSeconds(attackBeforeDuration);
+                rigid.AddForce(transform.forward * dashForce, ForceMode.Impulse);
+                meleeArea.enabled = true;
+
+                yield return new WaitForSeconds(attackDuration);
+                rigid.linearVelocity = Vector3.zero;
+                meleeArea.enabled = false;
+                
+                yield return new WaitForSeconds(attackAfterDuration);
+                break;
+
+            case Type.C:
+                break;
+        }
+
 
         isChase = true;
         isAttack = false;
