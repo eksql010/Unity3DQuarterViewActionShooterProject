@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,15 +11,52 @@ public class Enemy : MonoBehaviour
     public float explosionKnockbackHeight;
     public float explosionRotationPower;
 
+    public Transform targetTransform;
+    public bool isChase;
+
     Rigidbody rigid;
     BoxCollider boxCollider;
     Material material;
+    NavMeshAgent navAgent;
+    Animator animator;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
         material = GetComponentInChildren<MeshRenderer>().material;
+        navAgent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
+
+        Invoke("ChaseStart", 2f);
+    }
+
+    void Update()
+    {
+        if (isChase)
+        {
+            navAgent.SetDestination(targetTransform.position);
+        }
+    }
+
+    void FixedUpdate()
+    {
+        FreezeVelocity();
+    }
+
+    void ChaseStart()
+    {
+        isChase = true;
+        animator.SetBool("isWalk", true);
+    }
+
+    void FreezeVelocity()
+    {
+        if (isChase)
+        {
+            rigid.linearVelocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -71,6 +109,10 @@ public class Enemy : MonoBehaviour
             material.color = Color.gray3;
             gameObject.layer = 11;
 
+            isChase = false;
+            navAgent.enabled = false;
+            animator.SetTrigger("doDie");
+
             reactionVec = reactionVec.normalized;
             reactionVec += (isGrenade ? Vector3.up * explosionKnockbackHeight : Vector3.up);
 
@@ -79,7 +121,8 @@ public class Enemy : MonoBehaviour
             if (isGrenade)
             {
                 rigid.freezeRotation = false;
-                rigid.AddTorque(reactionVec * explosionRotationPower, ForceMode.Impulse);
+                Vector3 torqueAxis = Random.insideUnitSphere;
+                rigid.AddTorque(torqueAxis * explosionRotationPower, ForceMode.Impulse);
             }
 
             Destroy(gameObject, 3f);
