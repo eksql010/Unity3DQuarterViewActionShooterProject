@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7914504288247530122}
   - component: {fileID: 6494309345218548644}
-  - component: {fileID: 3308573101988947473}
+  - component: {fileID: 7285759857372338245}
   - component: {fileID: 3517363144364165097}
   - component: {fileID: 2538326122893119088}
   m_Layer: 9
@@ -154,7 +154,7 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!54 &3308573101988947473
+--- !u!54 &7285759857372338245
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -215,3 +215,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   damage: 20
+  isMelee: 0

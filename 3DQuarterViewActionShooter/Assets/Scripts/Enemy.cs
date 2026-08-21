@@ -21,9 +21,11 @@ public class Enemy : MonoBehaviour
     public float attackAfterDuration;   // 공격 종료 후 다음 공격까지의 대기 시간
     //  [SerializeField] float dashForce = 20f;
     public float dashForce;
+    public float missileForce;
 
     public Transform targetTransform;
     public BoxCollider meleeArea;
+    public GameObject missile;
     public bool isChase;
     public bool isAttack;
 
@@ -32,6 +34,7 @@ public class Enemy : MonoBehaviour
     Material material;
     NavMeshAgent navAgent;
     Animator animator;
+    MeshRenderer[] meshs;
 
     void Awake()
     {
@@ -40,6 +43,7 @@ public class Enemy : MonoBehaviour
         material = GetComponentInChildren<MeshRenderer>().material;
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
 
         Invoke("ChaseStart", 2f);
     }
@@ -92,12 +96,19 @@ public class Enemy : MonoBehaviour
 
     IEnumerator OnDamage(Vector3 reactionVec, bool isGrenade)
     {
-        material.color = Color.red;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.paleVioletRed;
+        }
+
         yield return new WaitForSeconds(0.1f);
 
         if (curHealth > 0)
         {
-            material.color = Color.white;
+            foreach (MeshRenderer mesh in meshs)
+            {
+                mesh.material.color = Color.white;
+            }
 
             reactionVec = reactionVec.normalized;
             reactionVec += Vector3.up;
@@ -106,7 +117,11 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            material.color = Color.gray3;
+            foreach (MeshRenderer mesh in meshs)
+            {
+                mesh.material.color = Color.gray;
+            }
+
             gameObject.layer = 11;
 
             isChase = false;
@@ -190,9 +205,15 @@ public class Enemy : MonoBehaviour
                 break;
 
             case Type.C:
+                yield return new WaitForSeconds(attackBeforeDuration);
+                GameObject instantMissile = Instantiate(missile, transform.position, transform.rotation);
+                
+                Rigidbody rigidMissile = instantMissile.GetComponent<Rigidbody>();
+                rigidMissile.linearVelocity = transform.forward * missileForce;
+
+                yield return new WaitForSeconds(attackAfterDuration);
                 break;
         }
-
 
         isChase = true;
         isAttack = false;
