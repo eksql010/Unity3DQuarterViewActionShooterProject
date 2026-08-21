@@ -11,8 +11,15 @@ public class Enemy : MonoBehaviour
     public float explosionKnockbackHeight;
     public float explosionRotationPower;
 
+    public float attackRadius;
+    public float attackRange;
+    public float attackBeforeDuration;  // 근접 콜라이더 활성화 전 시간
+    public float attackDuration;        // 근접 콜라이더 활성화 후 비활성화 전까지의 시간
+
     public Transform targetTransform;
+    public BoxCollider meleeArea;
     public bool isChase;
+    public bool isAttack;
 
     Rigidbody rigid;
     BoxCollider boxCollider;
@@ -33,30 +40,17 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (isChase)
+        if (navAgent.enabled)
         {
             navAgent.SetDestination(targetTransform.position);
+            navAgent.isStopped = !isChase;
         }
     }
 
     void FixedUpdate()
     {
         FreezeVelocity();
-    }
-
-    void ChaseStart()
-    {
-        isChase = true;
-        animator.SetBool("isWalk", true);
-    }
-
-    void FreezeVelocity()
-    {
-        if (isChase)
-        {
-            rigid.linearVelocity = Vector3.zero;
-            rigid.angularVelocity = Vector3.zero;
-        }
+        Targeting();
     }
 
     void OnTriggerEnter(Collider other)
@@ -127,5 +121,55 @@ public class Enemy : MonoBehaviour
 
             Destroy(gameObject, 3f);
         }
+    }
+
+    void ChaseStart()
+    {
+        isChase = true;
+        animator.SetBool("isWalk", true);
+    }
+
+    void FreezeVelocity()
+    {
+        if (isChase)
+        {
+            rigid.linearVelocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
+        }
+    }
+
+    void Targeting()
+    {
+        //  float targetRadius = 1.5f;
+        //  float targetRange = 3f;
+
+        RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
+                                                     attackRadius,
+                                                     transform.forward,
+                                                     attackRange,
+                                                     LayerMask.GetMask("Player"));
+
+        if (rayHits.Length > 0 && !isAttack)
+        {
+            StartCoroutine(Attack());
+
+        }
+    }
+
+    IEnumerator Attack()
+    {
+        isChase = false;
+        isAttack = true;
+        animator.SetBool("isAttack", true);
+
+        yield return new WaitForSeconds(attackBeforeDuration);
+        meleeArea.enabled = true;
+
+        yield return new WaitForSeconds(attackDuration);
+        meleeArea.enabled = false;
+
+        isChase = true;
+        isAttack = false;
+        animator.SetBool("isAttack", false);
     }
 }

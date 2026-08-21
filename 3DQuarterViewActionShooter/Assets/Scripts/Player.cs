@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
     public int maxCoin;
     public int maxHealth;
 
+    public float invincibilityDuration; // 무적시간
+
     float horizontalAxis;
     float verticalAxis;
 
@@ -43,12 +46,14 @@ public class Player : MonoBehaviour
     bool isFireReady = true;
     bool isReload;
     bool isBorder;
+    bool isDamage;
 
     Vector3 moveVector;
     Vector3 dodgeVector;
 
     Animator animator;
     Rigidbody rigid;
+    MeshRenderer[] meshs;
 
     GameObject nearObject;
     Weapon equipedWeapon;
@@ -59,6 +64,7 @@ public class Player : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponentInChildren<Rigidbody>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update()
@@ -86,7 +92,7 @@ public class Player : MonoBehaviour
         horizontalAxis = Input.GetAxisRaw("Horizontal");
         verticalAxis = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetButtonDown("Run"))
+        if (Input.GetButtonDown("Run"))
         {
             runDown = !runDown;
         }
@@ -149,7 +155,7 @@ public class Player : MonoBehaviour
 
     void Dodge()
     {
-        if(jumpDown && moveVector != Vector3.zero && !isJump && !isDodge)
+        if (jumpDown && moveVector != Vector3.zero && !isJump && !isDodge)
         {
             dodgeVector = moveVector;
 
@@ -196,9 +202,9 @@ public class Player : MonoBehaviour
 
     void Interaction()
     {
-        if(interactionDown && nearObject != null && !isJump && !isDodge)
+        if (interactionDown && nearObject != null && !isJump && !isDodge)
         {
-            if(nearObject.tag == "Weapon")
+            if (nearObject.tag == "Weapon")
             {
                 Item item = nearObject.GetComponent<Item>();
                 int weaponIndex = item.value;
@@ -211,13 +217,13 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        if(equipedWeapon == null)
+        if (equipedWeapon == null)
             return;
 
         fireDelay += Time.deltaTime;
         isFireReady = equipedWeapon.rate < fireDelay;
 
-        if(fireDown && isFireReady && !isDodge && !isReload) // && !isSwap)
+        if (fireDown && isFireReady && !isDodge && !isReload) // && !isSwap)
         {
             equipedWeapon.Use();
             animator.SetTrigger(equipedWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
@@ -229,7 +235,7 @@ public class Player : MonoBehaviour
     {
         if (equipedWeapon == null || equipedWeapon.type == Weapon.Type.Melee || ammo == 0)
             return;
-        
+
         if (reloadDown && !isJump && !isDodge && isFireReady) // && !isSwap)
         {
             animator.SetTrigger("doReload");
@@ -283,6 +289,23 @@ public class Player : MonoBehaviour
         isBorder = Physics.Raycast(transform.position, transform.forward, 5f, LayerMask.GetMask("Wall"));
     }
 
+    IEnumerator OnDamage()
+    {
+        isDamage = true;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.paleVioletRed;
+        }
+
+        yield return new WaitForSeconds(invincibilityDuration);
+
+        isDamage = false;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.white;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Floor")
@@ -324,6 +347,15 @@ public class Player : MonoBehaviour
             }
 
             Destroy(other.gameObject);
+        }
+        else if (other.gameObject.tag == "EnemyBullet")
+        {
+            if (!isDamage)
+            {
+                Bullet enemyBullet = other.GetComponent<Bullet>();
+                health -= enemyBullet.damage;
+                StartCoroutine(OnDamage());
+            }
         }
     }
 

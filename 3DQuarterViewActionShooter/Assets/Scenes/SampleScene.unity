@@ -377,8 +377,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &91014240
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -736,6 +742,7 @@ MonoBehaviour:
   maxAmmo: 999
   maxCoin: 99999
   maxHealth: 100
+  invincibilityDuration: 1
 --- !u!136 &236262822
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5952,8 +5959,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &373190442
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6282,8 +6295,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &440514678
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6797,6 +6816,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
@@ -6886,7 +6909,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4462523135328065168, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1557473724}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       insertIndex: -1
@@ -6954,8 +6980,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 2
   explosionRotationPower: 10
+  attackRadius: 1.5
+  attackRange: 3
+  attackBeforeDuration: 0.5
+  attackDuration: 1
   targetTransform: {fileID: 236262824}
+  meleeArea: {fileID: 1557473723}
   isChase: 0
+  isAttack: 0
 --- !u!54 &707477441
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7116,6 +7148,10 @@ PrefabInstance:
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_TagString
@@ -12509,8 +12545,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &883670640
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13166,8 +13208,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &1004101651
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13457,8 +13505,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 2
   explosionRotationPower: 10
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 236262824}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &1107963061
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13632,8 +13686,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 2
   explosionRotationPower: 10
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 236262824}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &1146302989
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13775,6 +13835,10 @@ PrefabInstance:
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_TagString
@@ -14206,6 +14270,10 @@ PrefabInstance:
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 328409505970683906, guid: 464cc7c4f7ea10b47a36d7848aa9ca9a, type: 3}
       propertyPath: m_TagString
@@ -19248,6 +19316,73 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2064996927}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1557473721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557473724}
+  - component: {fileID: 1557473723}
+  - component: {fileID: 1557473722}
+  m_Layer: 13
+  m_Name: Enemy Bullet
+  m_TagString: EnemyBullet
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1557473722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557473721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 827c63b4f0ec9344a9c7d6746443611e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  damage: 10
+--- !u!65 &1557473723
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557473721}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1557473724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557473721}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.25, z: 2.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 707477437}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1566821895
 GameObject:
   m_ObjectHideFlags: 0
@@ -19563,8 +19698,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 2
   explosionRotationPower: 10
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 236262824}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &1679267469
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -19801,8 +19942,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &1853197584
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20368,8 +20515,14 @@ MonoBehaviour:
   deadKnockbackPower: 10
   explosionKnockbackHeight: 1.5
   explosionRotationPower: 15
+  attackRadius: 0
+  attackRange: 0
+  attackBeforeDuration: 0
+  attackDuration: 0
   targetTransform: {fileID: 0}
+  meleeArea: {fileID: 0}
   isChase: 0
+  isAttack: 0
 --- !u!54 &2051230281
 Rigidbody:
   m_ObjectHideFlags: 0
