@@ -88,7 +88,7 @@ public class Boss : Enemy
         bossMissileA.targetTransform = targetTransform;
 
         // 두번째 미사일 0.2 + 0.3초 뒤 발사
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         GameObject instantMissileB = Instantiate(missile, missilePortB.position, missilePortB.rotation);
         BossMissile bossMissileB = instantMissileB.GetComponent<BossMissile>();
         bossMissileB.targetTransform = targetTransform;
