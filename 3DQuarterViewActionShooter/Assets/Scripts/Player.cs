@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public float reloadDuration;
     public float grenadeThrowHeight;
     public float grenadeRotationSpeed;
+    public float bossAttackKnockbackPower;
 
     public Camera followCamera;
 
@@ -289,7 +290,7 @@ public class Player : MonoBehaviour
         isBorder = Physics.Raycast(transform.position, transform.forward, 5f, LayerMask.GetMask("Wall"));
     }
 
-    IEnumerator OnDamage()
+    IEnumerator OnDamage(bool isBossAttack)
     {
         isDamage = true;
         foreach (MeshRenderer mesh in meshs)
@@ -297,12 +298,22 @@ public class Player : MonoBehaviour
             mesh.material.color = Color.paleVioletRed;
         }
 
+        if (isBossAttack)
+        {
+            rigid.AddForce(transform.forward * -bossAttackKnockbackPower, ForceMode.Impulse);
+        }    
+
         yield return new WaitForSeconds(invincibilityDuration);
 
         isDamage = false;
         foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.white;
+        }
+
+        if (isBossAttack)
+        {
+            rigid.linearVelocity = Vector3.zero;
         }
     }
 
@@ -355,12 +366,13 @@ public class Player : MonoBehaviour
                 Bullet enemyBullet = other.GetComponent<Bullet>();
                 health -= enemyBullet.damage;
 
-                if (other.GetComponent<Rigidbody>() != null)
-                {
-                    Destroy(other.gameObject);
-                }
+                bool isBossAttack = other.name == "Boss Melee Area";
+                StartCoroutine(OnDamage(isBossAttack));
+            }
 
-                StartCoroutine(OnDamage());
+            if (other.GetComponent<Rigidbody>() != null)
+            {
+                Destroy(other.gameObject);
             }
         }
     }

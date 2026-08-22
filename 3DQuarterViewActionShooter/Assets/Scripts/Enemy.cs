@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public enum Type { A, B, C };
+    public enum Type { A, B, C, D };
     public Type type;
 
     public int maxHealth;
@@ -25,32 +25,32 @@ public class Enemy : MonoBehaviour
 
     public Transform targetTransform;
     public BoxCollider meleeArea;
-    public GameObject missile;
+    public GameObject bullet;
     public bool isChase;
     public bool isAttack;
+    public bool isDead;
 
-    Rigidbody rigid;
-    BoxCollider boxCollider;
-    Material material;
-    NavMeshAgent navAgent;
-    Animator animator;
-    MeshRenderer[] meshs;
+    public Rigidbody rigid;
+    public BoxCollider boxCollider;
+    public NavMeshAgent navAgent;
+    public Animator animator;
+    public MeshRenderer[] meshs;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         boxCollider = GetComponent<BoxCollider>();
-        material = GetComponentInChildren<MeshRenderer>().material;
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         meshs = GetComponentsInChildren<MeshRenderer>();
 
-        Invoke("ChaseStart", 2f);
+        if (type != Type.D)
+            Invoke("ChaseStart", 2f);
     }
 
     void Update()
     {
-        if (navAgent.enabled)
+        if (navAgent.enabled && type != Type.D)
         {
             navAgent.SetDestination(targetTransform.position);
             navAgent.isStopped = !isChase;
@@ -124,6 +124,7 @@ public class Enemy : MonoBehaviour
 
             gameObject.layer = 11;
 
+            isDead = true;
             isChase = false;
             navAgent.enabled = false;
             animator.SetTrigger("doDie");
@@ -140,7 +141,8 @@ public class Enemy : MonoBehaviour
                 rigid.AddTorque(torqueAxis * explosionRotationPower, ForceMode.Impulse);
             }
 
-            Destroy(gameObject, 3f);
+            if (type != Type.D)
+                Destroy(gameObject, 3f);
         }
     }
 
@@ -161,6 +163,9 @@ public class Enemy : MonoBehaviour
 
     void Targeting()
     {
+        if (type == Type.D || isDead)
+            return;
+
         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
                                                      attackRadius,
                                                      transform.forward,
@@ -170,7 +175,6 @@ public class Enemy : MonoBehaviour
         if (rayHits.Length > 0 && !isAttack)
         {
             StartCoroutine(Attack());
-
         }
     }
 
@@ -206,10 +210,10 @@ public class Enemy : MonoBehaviour
 
             case Type.C:
                 yield return new WaitForSeconds(attackBeforeDuration);
-                GameObject instantMissile = Instantiate(missile, transform.position, transform.rotation);
+                GameObject instantBullet = Instantiate(bullet, transform.position, transform.rotation);
                 
-                Rigidbody rigidMissile = instantMissile.GetComponent<Rigidbody>();
-                rigidMissile.linearVelocity = transform.forward * missileForce;
+                Rigidbody rigidBullet = instantBullet.GetComponent<Rigidbody>();
+                rigidBullet.linearVelocity = transform.forward * missileForce;
 
                 yield return new WaitForSeconds(attackAfterDuration);
                 break;
