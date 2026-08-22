@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
     bool isReload;
     bool isBorder;
     bool isDamage;
+    bool isShop;
 
     Vector3 moveVector;
     Vector3 dodgeVector;
@@ -213,6 +214,12 @@ public class Player : MonoBehaviour
 
                 Destroy(nearObject);
             }
+            else if (nearObject.tag == "Shop")
+            {
+                Shop shop = nearObject.GetComponent<Shop>();
+                shop.Enter(this);
+                isShop = true;
+            }
         }
     }
 
@@ -224,7 +231,7 @@ public class Player : MonoBehaviour
         fireDelay += Time.deltaTime;
         isFireReady = equipedWeapon.rate < fireDelay;
 
-        if (fireDown && isFireReady && !isDodge && !isReload) // && !isSwap)
+        if (fireDown && isFireReady && !isDodge && !isReload && !isShop) // && !isSwap)
         {
             equipedWeapon.Use();
             animator.SetTrigger(equipedWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
@@ -237,7 +244,7 @@ public class Player : MonoBehaviour
         if (equipedWeapon == null || equipedWeapon.type == Weapon.Type.Melee || ammo == 0)
             return;
 
-        if (reloadDown && !isJump && !isDodge && isFireReady) // && !isSwap)
+        if (reloadDown && !isJump && !isDodge && isFireReady && !isShop) // && !isSwap)
         {
             animator.SetTrigger("doReload");
             isReload = true;
@@ -379,7 +386,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag == "Weapon")
+        if(other.tag == "Weapon" || other.tag == "Shop")
         {
             nearObject = other.gameObject;
             //  Debug.Log(nearObject.name);
@@ -390,6 +397,13 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Weapon")
         {
+            nearObject = null;
+        }
+        else if (other.tag == "Shop")
+        {
+            Shop shop = nearObject.GetComponent<Shop>();
+            shop.Exit();
+            isShop = false;
             nearObject = null;
         }
     }
